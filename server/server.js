@@ -1,8 +1,11 @@
 require('./config/config');
 
 const express = require('express');
-const app = express();
+const mongoose = require('mongoose');
+
 const bodyParser = require('body-parser');
+
+const app = express();
 
 //? *********************************************
 // parse application/x-www-form-urlencoded
@@ -13,47 +16,21 @@ app.use(bodyParser.json())
 
 //? *********************************************
 
+app.use(require('./routes/usuario'));
 
-//* Obtener
-app.get('/usuario', function(req, res) {
-    res.json('get usuario');
-});
-
-//* Insertar
-app.post('/usuario', function(req, res) {
-
-    //! Para obtener información enviada desde una aplicación al servidor
-    let body = req.body;
-
-    //! Utilizando los status code para responder en caso de que surja un error
-    if (body.nombre === undefined) {
-        res.status(400).json({
-            ok: false,
-            mensaje: 'El nombre es necesario'
-        });
-    } else {
-        res.json({
-            body
-        });
+//! Conexion a la base de datos de mongo
+mongoose.connect(process.env.URLDB, {
+    useNewUrlParser: true,
+    useFindAndModify: false,
+    useCreateIndex: true,
+    useUnifiedTopology: true
+}, (err) => {
+    if (err) {
+        throw err;
 
     }
+    console.log('Base de Datos online');
 
-});
-
-//* Actualizar
-app.put('/usuario/:id', function(req, res) {
-
-    //! Para obtener el parametro id
-    let id = req.params.id;
-
-    res.json({
-        id
-    });
-});
-
-//* Eliminar
-app.delete('/usuario', function(req, res) {
-    res.json('delete usuario');
 });
 
 app.listen(process.env.PORT, () => {
