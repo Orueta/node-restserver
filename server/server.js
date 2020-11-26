@@ -16,7 +16,8 @@ app.use(bodyParser.json())
 
 //? *********************************************
 
-app.use(require('./routes/usuario'));
+//! Configuración global de rutas
+app.use(require('./routes/index'));
 
 //! Conexion a la base de datos de mongo
 mongoose.connect(process.env.URLDB, {
@@ -33,6 +34,7 @@ mongoose.connect(process.env.URLDB, {
 
 });
 
+//! Configuración para saber si se esta escuchando el puerto
 app.listen(process.env.PORT, () => {
     console.log('Escuchando puerto', process.env.PORT);
 });

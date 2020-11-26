@@ -4,11 +4,13 @@ const bcrypt = require('bcrypt');
 const _ = require('underscore');
 
 const Usuario = require('../models/usuario');
+const { verificaToken, verificaAmin_Role } = require('../middlewares/autenticacion');
 
 const app = express();
 
 //* Obtener
-app.get('/usuario', function(req, res) {
+app.get('/usuario', verificaToken, function(req, res) {
+
     // Para que el programador pueda decidir desde que usuario se le mostrara
     let desde = req.query.desde || 0;
     desde = Number(desde);
@@ -44,16 +46,10 @@ app.get('/usuario', function(req, res) {
 });
 
 //* Insertar
-app.post('/usuario', function(req, res) {
+app.post('/usuario', [verificaToken, verificaAmin_Role], function(req, res) {
+
     //! Para obtener información enviada desde una aplicación al servidor
     let body = req.body;
-
-    let usuario = new Usuario({
-        nombre: body.nombre,
-        email: body.email,
-        password: bcrypt.hashSync(body.password, 10),
-        role: body.role
-    });
 
     // Insertar datos recibidos en la bd
     usuario.save((err, usuarioDB) => {
@@ -78,7 +74,7 @@ app.post('/usuario', function(req, res) {
 });
 
 //* Actualizar
-app.put('/usuario/:id', function(req, res) {
+app.put('/usuario/:id', [verificaToken, verificaAmin_Role], function(req, res) {
 
     //! Para obtener el parametro id
     let id = req.params.id;
@@ -103,7 +99,7 @@ app.put('/usuario/:id', function(req, res) {
 });
 
 //* Eliminar
-app.delete('/usuario/:id', function(req, res) {
+app.delete('/usuario/:id', [verificaToken, verificaAmin_Role], function(req, res) {
 
     let id = req.params.id;
 
