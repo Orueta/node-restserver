@@ -80,7 +80,6 @@ async function verify(token) {
     }
 }
 
-
 app.post('/google', async(req, res) => {
     // Primero obtenemos el token
     let token = req.body.idtoken;
