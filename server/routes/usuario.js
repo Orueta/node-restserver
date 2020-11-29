@@ -51,6 +51,15 @@ app.post('/usuario', [verificaToken, verificaAmin_Role], function(req, res) {
     //! Para obtener información enviada desde una aplicación al servidor
     let body = req.body;
 
+    //* Para llamar al modelo del usuario y poder usar sus propiedades
+    let usuario = new Usuario({
+        nombre: body.nombre,
+        email: body.email,
+        password: bcrypt.hashSync(body.password, 10),
+        role: body.role
+    });
+
+
     // Insertar datos recibidos en la bd
     usuario.save((err, usuarioDB) => {
         if (err) {
